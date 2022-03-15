@@ -5,6 +5,8 @@
     "rootDirs": ["src", "test"],
     "declaration": false,
     "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "Node",
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
