@@ -2,7 +2,7 @@ import { getAllRepos, groupByLang, write2Md } from './util'
 import orderBy from 'lodash/orderBy'
 import { toc } from 'mdast-util-toc'
 import { toMarkdown } from 'mdast-util-to-markdown'
-import type { Root, Content, Paragraph, Text } from 'mdast'
+import type { Root, Content, Paragraph, ListItem, Link } from 'mdast'
 import dayjs from 'dayjs'
 
 const pkg = require('../package.json')
@@ -48,7 +48,7 @@ export default async function main () {
       type: 'list',
       ordered: true,
       children: orderedRepos.map((repo, idx) => {
-        const linkChildren: Text[] = [
+        const linkChildren: Link['children'] = [
           {
             type: 'text',
             value: repo.name
@@ -62,6 +62,7 @@ export default async function main () {
             children: linkChildren
           }
         ]
+
         if (repo.fork) {
           paragraphChildren.push({
             type: 'text',
@@ -74,15 +75,27 @@ export default async function main () {
           value: ` (${dayjs(repo.updated_at).format('YYYY-MM-DD HH:mm:ss')})`
         })
 
+        const listItemChildren: ListItem['children'] = [
+          {
+            type: 'paragraph',
+            children: paragraphChildren
+          }
+        ]
+        if (repo.description) {
+          listItemChildren.push({
+            type: 'paragraph',
+            children: [
+              {
+                type: 'text',
+                value: repo.description
+              }
+            ]
+          })
+        }
         return {
           type: 'listItem',
           // spread: false,
-          children: [
-            {
-              type: 'paragraph',
-              children: paragraphChildren
-            }
-          ]
+          children: listItemChildren
         }
       })
     })
@@ -92,7 +105,9 @@ export default async function main () {
     type: 'root',
     children
   }
-  const tocResult = toc(tree)
+  const tocResult = toc(tree, {
+    tight: true
+  })
   if (tocResult.map) {
     tree.children.splice(1, 0, tocResult.map)
   }
