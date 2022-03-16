@@ -1,17 +1,22 @@
-import { Octokit, RestEndpointMethodTypes } from '@octokit/rest'
+import type { RestEndpointMethodTypes } from '@octokit/rest'
 import groupBy from 'lodash/groupBy'
 import uniqBy from 'lodash/uniqBy'
 import fs from 'fs/promises'
 import path from 'path'
-
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN
-})
+import github from '@actions/github'
+// github.getOctokit()
+// const octokit = new Octokit({
+//   auth: process.env.GITHUB_TOKEN
+// })
 
 export type Repository =
   RestEndpointMethodTypes['repos']['listForUser']['response']['data'][number]
 
-export async function getAllRepos () {
+export async function getAllRepos (token: string, username: string) {
+  const octokit = github.getOctokit(token)
+  // const octokit = new Octokit({
+  //   auth: process.env.GITHUB_TOKEN
+  // })
   const perPage = 100
   let page = 0
   let l = perPage
@@ -19,7 +24,7 @@ export async function getAllRepos () {
 
   while (l === perPage) {
     const res = await octokit.rest.repos.listForUser({
-      username: 'sonofmagic',
+      username,
       per_page: perPage,
       page,
       sort: 'updated'
@@ -28,7 +33,7 @@ export async function getAllRepos () {
     l = res.data.length
     allRepos = allRepos.concat(res.data)
   }
-  return uniqBy(allRepos, repo => repo.id)
+  return uniqBy(allRepos, (repo) => repo.id)
 }
 
 export function groupByLang (repos: Repository[]) {

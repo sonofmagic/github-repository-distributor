@@ -4,11 +4,14 @@ import { toc } from 'mdast-util-toc'
 import { toMarkdown } from 'mdast-util-to-markdown'
 import type { Root, Content, Paragraph, ListItem, Link } from 'mdast'
 import dayjs from 'dayjs'
+import core from '@actions/core'
+import github from '@actions/github'
 
-const pkg = require('../package.json')
+// const pkg = require('../package.json')
 // import pkg from '../package.json'
-export default async function main () {
-  const repos = await getAllRepos()
+export async function main () {
+  const { token, username } = getOptions()
+  const repos = await getAllRepos(token, username)
   const dic = groupByLang(repos)
 
   const children: Content[] = []
@@ -18,7 +21,7 @@ export default async function main () {
     children: [
       {
         type: 'text',
-        value: pkg.name
+        value: github.context.repo.repo // pkg.name
       }
     ]
   })
@@ -108,9 +111,46 @@ export default async function main () {
   const tocResult = toc(tree, {
     tight: true
   })
+  children.push({
+    type: 'break'
+  })
+  children.push({
+    type: 'paragraph',
+    children: [
+      {
+        type: 'text',
+        value: 'Generate by '
+      },
+      {
+        type: 'link',
+        url: 'https://github.com/sonofmagic/github-repository-distributor',
+        children: [
+          {
+            type: 'inlineCode',
+            value: 'sonofmagic/github-repository-distributor'
+          }
+        ]
+      },
+      {
+        type: 'text',
+        value: ` at ${dayjs().format('YYYY-MM-DD HH:mm:ss')}`
+      }
+    ]
+  })
   if (tocResult.map) {
     tree.children.splice(1, 0, tocResult.map)
   }
 
   await write2Md(toMarkdown(tree))
 }
+
+export function getOptions () {
+  const token = core.getInput('token')
+  const username = core.getInput('username')
+  return {
+    token,
+    username
+  }
+}
+
+main()
