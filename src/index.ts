@@ -7,21 +7,38 @@ import dayjs from 'dayjs'
 import core from '@actions/core'
 import github from '@actions/github'
 
-// const pkg = require('../package.json')
+import type { UserDefinedOptions } from './type'
+const pkg = require('../package.json')
 // import pkg from '../package.json'
-export async function main () {
-  const { token, username } = getOptions()
-  const repos = await getAllRepos(token, username)
+declare var __isAction__: boolean
+
+export async function main (options?: UserDefinedOptions) {
+  let repos
+  if (__isAction__) {
+    repos = await getAllRepos(getActionOptions())
+  } else {
+    if (!options) {
+      throw new TypeError('token and username must be defined')
+    }
+    repos = await getAllRepos(options)
+  }
+
   const dic = groupByLang(repos)
 
   const children: Content[] = []
+  let h1: string
+  if (__isAction__) {
+    h1 = github.context.repo.repo
+  } else {
+    h1 = options?.title ?? pkg.name
+  }
   children.push({
     type: 'heading',
     depth: 1,
     children: [
       {
         type: 'text',
-        value: github.context.repo.repo // pkg.name
+        value: h1 // pkg.name
       }
     ]
   })
@@ -112,7 +129,7 @@ export async function main () {
     tight: true
   })
   children.push({
-    type: 'break'
+    type: 'thematicBreak'
   })
   children.push({
     type: 'paragraph',
@@ -144,7 +161,7 @@ export async function main () {
   await write2Md(toMarkdown(tree))
 }
 
-export function getOptions () {
+export function getActionOptions (): UserDefinedOptions {
   const token = core.getInput('token')
   const username = core.getInput('username')
   return {
@@ -153,4 +170,6 @@ export function getOptions () {
   }
 }
 
-main()
+if (__isAction__) {
+  main()
+}

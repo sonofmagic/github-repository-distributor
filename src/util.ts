@@ -1,22 +1,23 @@
-import type { RestEndpointMethodTypes } from '@octokit/rest'
 import groupBy from 'lodash/groupBy'
 import uniqBy from 'lodash/uniqBy'
 import fs from 'fs/promises'
 import path from 'path'
 import github from '@actions/github'
-// github.getOctokit()
-// const octokit = new Octokit({
-//   auth: process.env.GITHUB_TOKEN
-// })
+import type { Repository, UserDefinedOptions } from './type'
+declare var __isAction__: boolean
 
-export type Repository =
-  RestEndpointMethodTypes['repos']['listForUser']['response']['data'][number]
+export async function getAllRepos (options: UserDefinedOptions) {
+  const { token, username } = options
+  let octokit
+  if (__isAction__) {
+    octokit = github.getOctokit(token)
+  } else {
+    const { Octokit } = await import('@octokit/rest') // require()
+    octokit = new Octokit({
+      auth: process.env.GITHUB_TOKEN
+    })
+  }
 
-export async function getAllRepos (token: string, username: string) {
-  const octokit = github.getOctokit(token)
-  // const octokit = new Octokit({
-  //   auth: process.env.GITHUB_TOKEN
-  // })
   const perPage = 100
   let page = 0
   let l = perPage

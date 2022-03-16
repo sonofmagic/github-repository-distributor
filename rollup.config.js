@@ -3,15 +3,17 @@ import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import pkg from './package.json'
-const isProd = process.env.NODE_ENV === 'production'
+import replace from '@rollup/plugin-replace'
+// const isProd = process.env.NODE_ENV === 'production'
 const isDev = process.env.NODE_ENV === 'development'
+const isAction = process.env.BUILD_TARGET === 'action'
 
 /** @type {import('rollup').RollupOptions} */
 const config = {
   input: 'src/index.ts',
   output: [
     {
-      file: isProd ? 'lib/index.js' : pkg.main,
+      file: isAction ? 'lib/index.js' : pkg.main,
       format: 'cjs',
       sourcemap: isDev,
       exports: 'auto'
@@ -20,6 +22,12 @@ const config = {
   ],
 
   plugins: [
+    replace({
+      preventAssignment: true,
+      values: {
+        __isAction__: JSON.stringify(isAction)
+      }
+    }),
     json(),
     nodeResolve({
       preferBuiltins: true

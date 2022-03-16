@@ -22,20 +22,18 @@ module.exports = {
     es2021: true,
     node: true
   },
-  extends: [
-    'standard'
-  ],
+  extends: ['standard'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 12,
     sourceType: 'module'
   },
-  plugins: [
-    '@typescript-eslint'
-  ],
+  plugins: ['@typescript-eslint'],
   rules: {
+    'no-var': 0
   },
   globals: {
+    __isAction__: true,
     ...getJestGlobals()
   }
 }
