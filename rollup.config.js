@@ -4,6 +4,7 @@ import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import pkg from './package.json'
 import replace from '@rollup/plugin-replace'
+import { terser } from 'rollup-plugin-terser'
 // const isProd = process.env.NODE_ENV === 'production'
 const isDev = process.env.NODE_ENV === 'development'
 const isAction = process.env.BUILD_TARGET === 'action'
@@ -22,6 +23,7 @@ const config = {
   ],
 
   plugins: [
+    isAction ? terser() : undefined,
     replace({
       preventAssignment: true,
       values: {

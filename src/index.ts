@@ -1,5 +1,4 @@
 import { getAllRepos, groupByLang, write2Md, dayjs } from './util'
-import { github } from './action'
 import { toMarkdown, toc } from './md'
 import { orderBy } from './lodash'
 import { getOptions } from './options'
@@ -32,13 +31,14 @@ export async function getRepos (options: UserDefinedOptions) {
   return repos
 }
 
-export function makeTree (
+export async function makeTree (
   dic: Dictionary<Repository[]>,
   options: UserDefinedOptions
 ) {
   const children: Content[] = []
   let h1: string
   if (__isAction__) {
+    const { github } = await import('./action')
     h1 = github.context.repo.repo
   } else {
     h1 = options.title ?? pkg.name
@@ -175,10 +175,10 @@ export function makeTree (
 }
 
 export async function main (options?: RawUserDefinedOptions) {
-  const opt = getOptions(options)
+  const opt = await getOptions(options)
   const repos = await getRepos(opt)
   const dic = groupByLang(repos)
-  const tree = makeTree(dic, opt)
+  const tree = await makeTree(dic, opt)
   await write2Md(toMarkdown(tree), opt.filepath)
 }
 

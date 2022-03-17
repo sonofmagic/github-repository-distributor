@@ -1,5 +1,4 @@
 import { groupBy, uniqBy } from './lodash'
-import { github } from './action'
 import dayjs from 'dayjs'
 import fs from 'fs/promises'
 import path from 'path'
@@ -13,6 +12,7 @@ export async function getAllRepos (options: UserDefinedOptions) {
   const { token, username } = options
   let octokit
   if (__isAction__) {
+    const { github } = await import('./action')
     octokit = github.getOctokit(token)
   } else {
     const { Octokit } = await import('@octokit/rest') // require()

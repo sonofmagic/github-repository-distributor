@@ -1,11 +1,12 @@
 import type { UserDefinedOptions, RawUserDefinedOptions } from './type'
 import defu from 'defu'
 // import pkg from '../package.json'
-import { getActionOptions } from './action'
+
 // 'rootDir' is expected to contain all source files.
 const pkg = require('../package.json')
 
 declare var __isAction__: boolean
+
 export function getDefaults (): UserDefinedOptions {
   return {
     token: process.env.GITHUB_TOKEN ?? '',
@@ -42,12 +43,13 @@ export function transfer (options?: RawUserDefinedOptions) {
   return opt
 }
 
-export function getOptions (
+export async function getOptions (
   options?: RawUserDefinedOptions
-): UserDefinedOptions {
+): Promise<UserDefinedOptions> {
   let opt: Partial<UserDefinedOptions>
 
   if (__isAction__) {
+    const { getActionOptions } = await import('./action')
     opt = transfer(getActionOptions())
   } else {
     opt = transfer(options)
