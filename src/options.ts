@@ -13,7 +13,8 @@ export function getDefaults (): UserDefinedOptions {
     username: 'sonofmagic',
     filepath: 'README.md',
     motto: true,
-    title: pkg.name
+    title: pkg.name,
+    includeFork: true
   }
 }
 
@@ -35,7 +36,8 @@ export function transfer (options?: RawUserDefinedOptions) {
   if (options) {
     opt = {
       ...options,
-      motto: parseBoolean(options.motto)
+      motto: parseBoolean(options.motto),
+      includeFork: parseBoolean(options.includeFork)
     }
   } else {
     opt = {}

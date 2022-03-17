@@ -10,6 +10,7 @@ export interface RawUserDefinedOptions {
   title?: string
   motto?: string | boolean
   filepath?: string
+  includeFork?: string | boolean
 }
 export interface UserDefinedOptions {
   token: string
@@ -17,4 +18,5 @@ export interface UserDefinedOptions {
   title: string
   motto: boolean
   filepath: string
+  includeFork: boolean
 }

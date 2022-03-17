@@ -4,6 +4,7 @@ main({
   token: process.env.GITHUB_TOKEN,
   username: 'sonofmagic',
   filepath: 'test/fixtures/README.md',
-  motto: false,
-  title: 'Hello world'
+  motto: 'true',
+  title: 'Hello world',
+  includeFork: 'true'
 })

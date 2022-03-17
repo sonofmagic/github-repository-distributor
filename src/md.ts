@@ -44,21 +44,22 @@ export async function makeTree (
 
   const keys = Object.keys(dic)
   const orderedKeys = orderBy(keys, (key) => dic[key].length, 'desc')
-
-  children.push({
-    type: 'heading',
-    depth: 2,
-    children: [
-      {
-        type: 'text',
-        value: 'Legend'
-      }
-    ]
-  })
-  children.push({
-    type: 'text',
-    value: `${nameToEmoji.twisted_rightwards_arrows}:forked `
-  })
+  if (options.includeFork) {
+    children.push({
+      type: 'heading',
+      depth: 2,
+      children: [
+        {
+          type: 'text',
+          value: 'Legend'
+        }
+      ]
+    })
+    children.push({
+      type: 'text',
+      value: `${nameToEmoji.twisted_rightwards_arrows}:forked `
+    })
+  }
 
   for (let i = 0; i < orderedKeys.length; i++) {
     const lang = orderedKeys[i]

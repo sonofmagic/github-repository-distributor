@@ -9,7 +9,7 @@ export { dayjs }
 declare var __isAction__: boolean
 
 export async function getAllRepos (options: UserDefinedOptions) {
-  const { token, username } = options
+  const { token, username, includeFork } = options
   let octokit
   if (__isAction__) {
     const { github } = await import('./action')
@@ -37,7 +37,11 @@ export async function getAllRepos (options: UserDefinedOptions) {
     l = res.data.length
     allRepos = allRepos.concat(res.data)
   }
-  return uniqBy(allRepos, (repo) => repo.id)
+  const result = uniqBy(allRepos, (repo) => repo.id)
+  if (!includeFork) {
+    return result.filter((x) => !x.fork)
+  }
+  return result
 }
 
 export function groupByLang (repos: Repository[]) {

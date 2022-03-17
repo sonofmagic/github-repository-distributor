@@ -8,7 +8,11 @@ inputs:
     description: 'github username to generate markdown files'
     required: true
   motto:
-    description: 'whether add powered by footer'
+    description: 'whether add powered by footer (boolean)'
+    default: 'true'
+  includeFork:
+    description: 'include forked repos (boolean)'
+    default: 'true'
   filepath:
     description: 'main markdown file path'
     default: 'README.md'
