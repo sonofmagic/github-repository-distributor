@@ -1,13 +1,13 @@
 {
   "name": "github-repository-distributor",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "github-repository-distributor",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
   "scripts": {
     "dev": "yarn dts && cross-env NODE_ENV=development rollup -cw",
     "build": "yarn clean && yarn dts && cross-env NODE_ENV=production rollup -c",
-    "build:action": "cross-env NODE_ENV=production BUILD_TARGET=action rollup -c",
+    "build:action": "yarn clean lib && cross-env NODE_ENV=production BUILD_TARGET=action rollup -c",
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
     "dts": "ttsc --emitDeclarationOnly -p tsconfig.dts.json",
     "test": "jest",
@@ -69,6 +69,7 @@
     "eslint-plugin-import": "2.25.4",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-promise": "6.0.0",
+    "gemoji": "^7.1.0",
     "jest": "^27.5.1",
     "lodash": "^4.17.21",
     "markdown-table": "^3.0.2",
