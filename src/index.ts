@@ -1,13 +1,16 @@
-import { getAllRepos, groupByLang, write2Md } from './util'
+import { getAllRepos, groupByLang, write2Md, dayjs } from './util'
+import { getActionOptions, github } from './action'
+import { toMarkdown, toc } from './md'
 import orderBy from 'lodash/orderBy'
-import { toc } from 'mdast-util-toc'
-import { toMarkdown } from 'mdast-util-to-markdown'
-import type { Root, Content, Paragraph, ListItem, Link } from 'mdast'
-import dayjs from 'dayjs'
-import core from '@actions/core'
-import github from '@actions/github'
+import type {
+  Root,
+  Content,
+  Paragraph,
+  ListItem,
+  Link,
+  UserDefinedOptions
+} from './type'
 
-import type { UserDefinedOptions } from './type'
 const pkg = require('../package.json')
 // import pkg from '../package.json'
 declare var __isAction__: boolean
@@ -125,9 +128,7 @@ export async function main (options?: UserDefinedOptions) {
     type: 'root',
     children
   }
-  const tocResult = toc(tree, {
-    tight: true
-  })
+
   children.push({
     type: 'thematicBreak'
   })
@@ -154,20 +155,14 @@ export async function main (options?: UserDefinedOptions) {
       }
     ]
   })
+  const tocResult = toc(tree, {
+    tight: true
+  })
   if (tocResult.map) {
     tree.children.splice(1, 0, tocResult.map)
   }
 
   await write2Md(toMarkdown(tree))
-}
-
-export function getActionOptions (): UserDefinedOptions {
-  const token = core.getInput('token')
-  const username = core.getInput('username')
-  return {
-    token,
-    username
-  }
 }
 
 if (__isAction__) {

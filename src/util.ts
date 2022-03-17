@@ -1,9 +1,12 @@
-import groupBy from 'lodash/groupBy'
-import uniqBy from 'lodash/uniqBy'
+import { groupBy, uniqBy } from './lodash'
+import { github } from './action'
+import dayjs from 'dayjs'
 import fs from 'fs/promises'
 import path from 'path'
-import github from '@actions/github'
+
 import type { Repository, UserDefinedOptions } from './type'
+export { dayjs }
+// export { default as dayjs } from 'dayjs'
 declare var __isAction__: boolean
 
 export async function getAllRepos (options: UserDefinedOptions) {
@@ -14,7 +17,7 @@ export async function getAllRepos (options: UserDefinedOptions) {
   } else {
     const { Octokit } = await import('@octokit/rest') // require()
     octokit = new Octokit({
-      auth: process.env.GITHUB_TOKEN
+      auth: token
     })
   }
 
