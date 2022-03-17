@@ -1,6 +1,6 @@
 {
   "name": "github-repository-distributor",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "github-repository-distributor",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",

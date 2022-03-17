@@ -9,19 +9,25 @@ import { terser } from 'rollup-plugin-terser'
 const isDev = process.env.NODE_ENV === 'development'
 const isAction = process.env.BUILD_TARGET === 'action'
 
+/** @type {import('rollup').OutputOptions} */
+const npmOutput = {
+  file: pkg.main,
+  format: 'cjs',
+  sourcemap: isDev,
+  exports: 'auto'
+}
+
+/** @type {import('rollup').OutputOptions} */
+const actionOutput = {
+  dir: 'lib',
+  format: 'cjs',
+  exports: 'auto'
+}
+
 /** @type {import('rollup').RollupOptions} */
 const config = {
   input: 'src/index.ts',
-  output: [
-    {
-      file: isAction ? 'lib/index.js' : pkg.main,
-      format: 'cjs',
-      sourcemap: isDev,
-      exports: 'auto'
-    }
-    // { format: 'esm', file: pkg.module, sourcemap: isDev }
-  ],
-
+  output: isAction ? actionOutput : npmOutput,
   plugins: [
     isAction ? terser() : undefined,
     replace({
@@ -35,7 +41,10 @@ const config = {
       preferBuiltins: true
     }),
     commonjs(),
-    typescript({ tsconfig: './tsconfig.build.json', sourceMap: isDev })
+    typescript({
+      tsconfig: isAction ? './tsconfig.action.json' : './tsconfig.build.json',
+      sourceMap: isDev
+    })
   ],
   external: [
     ...(pkg.dependencies ? Object.keys(pkg.dependencies) : []),
