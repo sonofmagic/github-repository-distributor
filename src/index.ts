@@ -1,39 +1,47 @@
 import { getAllRepos, groupByLang, write2Md, dayjs } from './util'
-import { getActionOptions, github } from './action'
+import { github } from './action'
 import { toMarkdown, toc } from './md'
-import orderBy from 'lodash/orderBy'
+import { orderBy } from './lodash'
+import { getOptions } from './options'
 import type {
   Root,
   Content,
   Paragraph,
   ListItem,
   Link,
-  UserDefinedOptions
+  UserDefinedOptions,
+  RawUserDefinedOptions,
+  Repository,
+  Dictionary
 } from './type'
 
 const pkg = require('../package.json')
 // import pkg from '../package.json'
 declare var __isAction__: boolean
 
-export async function main (options?: UserDefinedOptions) {
-  let repos
+export async function getRepos (options: UserDefinedOptions) {
+  let repos: Repository[]
   if (__isAction__) {
-    repos = await getAllRepos(getActionOptions())
+    repos = await getAllRepos(options)
   } else {
     if (!options) {
       throw new TypeError('token and username must be defined')
     }
     repos = await getAllRepos(options)
   }
+  return repos
+}
 
-  const dic = groupByLang(repos)
-
+export function makeTree (
+  dic: Dictionary<Repository[]>,
+  options: UserDefinedOptions
+) {
   const children: Content[] = []
   let h1: string
   if (__isAction__) {
     h1 = github.context.repo.repo
   } else {
-    h1 = options?.title ?? pkg.name
+    h1 = options.title ?? pkg.name
   }
   children.push({
     type: 'heading',
@@ -128,41 +136,50 @@ export async function main (options?: UserDefinedOptions) {
     type: 'root',
     children
   }
+  if (options.motto) {
+    children.push({
+      type: 'thematicBreak'
+    })
+    children.push({
+      type: 'paragraph',
+      children: [
+        {
+          type: 'text',
+          value: 'Generate by '
+        },
+        {
+          type: 'link',
+          url: 'https://github.com/sonofmagic/github-repository-distributor',
+          children: [
+            {
+              type: 'inlineCode',
+              value: 'sonofmagic/github-repository-distributor'
+            }
+          ]
+        },
+        {
+          type: 'text',
+          value: ` at ${dayjs().format('YYYY-MM-DD HH:mm:ss')}`
+        }
+      ]
+    })
+  }
 
-  children.push({
-    type: 'thematicBreak'
-  })
-  children.push({
-    type: 'paragraph',
-    children: [
-      {
-        type: 'text',
-        value: 'Generate by '
-      },
-      {
-        type: 'link',
-        url: 'https://github.com/sonofmagic/github-repository-distributor',
-        children: [
-          {
-            type: 'inlineCode',
-            value: 'sonofmagic/github-repository-distributor'
-          }
-        ]
-      },
-      {
-        type: 'text',
-        value: ` at ${dayjs().format('YYYY-MM-DD HH:mm:ss')}`
-      }
-    ]
-  })
   const tocResult = toc(tree, {
     tight: true
   })
   if (tocResult.map) {
     tree.children.splice(1, 0, tocResult.map)
   }
+  return tree
+}
 
-  await write2Md(toMarkdown(tree))
+export async function main (options?: RawUserDefinedOptions) {
+  const opt = getOptions(options)
+  const repos = await getRepos(opt)
+  const dic = groupByLang(repos)
+  const tree = makeTree(dic, opt)
+  await write2Md(toMarkdown(tree), opt.filepath)
 }
 
 if (__isAction__) {

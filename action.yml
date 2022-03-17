@@ -7,6 +7,13 @@ inputs:
   username:
     description: 'github username to generate markdown files'
     required: true
+  motto:
+    description: 'whether add 'powered by' footer'
+  filepath: 
+    description: 'main markdown file path'
+    default: 'README.md'
+  title:
+    description: 'main markdown h1 title'
 # outputs:
 #   time: # id of output
 #     description: 'The time we greeted you'

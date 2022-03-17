@@ -525,7 +525,3 @@
 1.  [quickly-start-for-web-function](https://github.com/sonofmagic/quickly-start-for-web-function) (2021-08-06 12:25:11)
 
     quickly-start-for-web-function
-
-***
-
-Generate by [`sonofmagic/github-repository-distributor`](https://github.com/sonofmagic/github-repository-distributor) at 2022-03-17 12:44:25
