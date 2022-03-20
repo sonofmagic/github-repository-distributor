@@ -9,7 +9,7 @@ export { dayjs }
 declare var __isAction__: boolean
 
 export async function getAllRepos (options: UserDefinedOptions) {
-  const { token, username, includeFork } = options
+  const { token, username, includeFork, includeArchived } = options
   let octokit
   if (__isAction__) {
     const { github } = await import('./action')
@@ -37,7 +37,10 @@ export async function getAllRepos (options: UserDefinedOptions) {
     l = res.data.length
     allRepos = allRepos.concat(res.data)
   }
-  const result = uniqBy(allRepos, (repo) => repo.id)
+  let result = uniqBy(allRepos, (repo) => repo.id)
+  if (!includeArchived) {
+    result = result.filter((x) => !x.archived)
+  }
   if (!includeFork) {
     return result.filter((x) => !x.fork)
   }
@@ -61,4 +64,17 @@ export async function write2Md (data: string, filepath = 'README.md') {
       encoding: 'utf-8'
     })
   }
+}
+
+export function parseBoolean (bool?: string | boolean) {
+  if (typeof bool === 'boolean') {
+    return bool
+  }
+  if (typeof bool === 'undefined') {
+    return false
+  }
+  if (typeof bool === 'string') {
+    return bool === 'true'
+  }
+  return false
 }

@@ -44,7 +44,24 @@ export async function makeTree (
 
   const keys = Object.keys(dic)
   const orderedKeys = orderBy(keys, (key) => dic[key].length, 'desc')
+
+  const para: Paragraph = {
+    type: 'paragraph',
+    children: []
+  }
   if (options.includeFork) {
+    para.children.push({
+      type: 'text',
+      value: `${nameToEmoji.twisted_rightwards_arrows}:forked `
+    })
+  }
+  if (options.includeArchived) {
+    para.children.push({
+      type: 'text',
+      value: `${nameToEmoji.books}:archived `
+    })
+  }
+  if (para.children.length) {
     children.push({
       type: 'heading',
       depth: 2,
@@ -55,10 +72,7 @@ export async function makeTree (
         }
       ]
     })
-    children.push({
-      type: 'text',
-      value: `${nameToEmoji.twisted_rightwards_arrows}:forked `
-    })
+    children.push(para)
   }
 
   for (let i = 0; i < orderedKeys.length; i++) {
@@ -102,6 +116,12 @@ export async function makeTree (
           paragraphChildren.push({
             type: 'text',
             value: ` ${nameToEmoji.twisted_rightwards_arrows}` // ' (forked)'
+          })
+        }
+        if (repo.archived) {
+          paragraphChildren.push({
+            type: 'text',
+            value: ` ${nameToEmoji.books}` // ' (archived)'
           })
         }
 

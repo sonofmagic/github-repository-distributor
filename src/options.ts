@@ -1,5 +1,6 @@
 import type { UserDefinedOptions, RawUserDefinedOptions } from './type'
 import defu from 'defu'
+import { parseBoolean } from './util'
 // import pkg from '../package.json'
 
 // 'rootDir' is expected to contain all source files.
@@ -14,21 +15,10 @@ export function getDefaults (): UserDefinedOptions {
     filepath: 'README.md',
     motto: true,
     title: pkg.name,
-    includeFork: true
+    includeFork: true,
+    includeArchived: true,
+    onlyPrivate: false
   }
-}
-
-export function parseBoolean (bool?: string | boolean) {
-  if (typeof bool === 'boolean') {
-    return bool
-  }
-  if (typeof bool === 'undefined') {
-    return false
-  }
-  if (typeof bool === 'string') {
-    return bool === 'true'
-  }
-  return false
 }
 
 export function transfer (options?: RawUserDefinedOptions) {
@@ -37,7 +27,9 @@ export function transfer (options?: RawUserDefinedOptions) {
     opt = {
       ...options,
       motto: parseBoolean(options.motto),
-      includeFork: parseBoolean(options.includeFork)
+      includeFork: parseBoolean(options.includeFork),
+      includeArchived: parseBoolean(options.includeArchived),
+      onlyPrivate: parseBoolean(options.onlyPrivate)
     }
   } else {
     opt = {}
@@ -52,7 +44,7 @@ export async function getOptions (
 
   if (__isAction__) {
     const { getActionOptions } = await import('./action')
-    opt = transfer(getActionOptions())
+    opt = getActionOptions()
   } else {
     opt = transfer(options)
   }

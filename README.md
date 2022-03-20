@@ -54,11 +54,14 @@ main({
 
 ### Options
 
-| Name        | Type              | Description                                | Default Value |
-| ----------- | ----------------- | ------------------------------------------ | ------------- |
-| token       | string            | the repo PAT or GITHUB_TOKEN               |               |
-| username    | string            | github username to generate markdown files |               |
-| filepath    | string            | main markdown file path                    | README.md     |
-| motto       | string \| boolean | whether add powered by footer              | 'false'       | --- |
-| title       | string            | main markdown h1 title                     | repo.name     |
-| includeFork | string \| boolean | include forked repos                       | 'false'       |
+| Name            | Type              | Description                                | Default Value |
+| --------------- | ----------------- | ------------------------------------------ | ------------- |
+| token           | string            | the repo PAT or GITHUB_TOKEN               |               |
+| username        | string            | github username to generate markdown files |               |
+| filepath        | string            | main markdown file path                    | README.md     |
+| motto           | string \| boolean | whether add powered by footer              | 'false'        |
+| title           | string            | main markdown h1 title                     | repo.name     |
+| includeFork     | string \| boolean | include forked repos                       | 'false'        |
+| includeArchived | string \| boolean | include archived repos                     | 'false'        |
+| onlyPrivate     | string \| boolean | only include private repos                 | 'false'       |
+

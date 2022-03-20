@@ -6,5 +6,6 @@ main({
   filepath: 'test/fixtures/README.md',
   motto: 'true',
   title: 'Hello world',
-  includeFork: 'true'
+  includeFork: 'true',
+  includeArchived: 'true'
 })

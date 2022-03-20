@@ -13,11 +13,17 @@ inputs:
   includeFork:
     description: 'include forked repos (boolean)'
     default: 'true'
+  includeArchived:
+    description: 'include archived repos (boolean)'
+    default: 'true'
   filepath:
     description: 'main markdown file path'
     default: 'README.md'
   title:
     description: 'main markdown h1 title'
+  onlyPrivate:
+    description: 'only include private repos (boolean)'
+    default: 'false'
 # outputs:
 #   time: # id of output
 #     description: 'The time we greeted you'

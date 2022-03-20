@@ -11,6 +11,8 @@ export interface RawUserDefinedOptions {
   motto?: string | boolean
   filepath?: string
   includeFork?: string | boolean
+  includeArchived?: string | boolean
+  onlyPrivate?: string | boolean
 }
 export interface UserDefinedOptions {
   token: string
@@ -19,4 +21,6 @@ export interface UserDefinedOptions {
   motto: boolean
   filepath: string
   includeFork: boolean
+  includeArchived: boolean
+  onlyPrivate: boolean
 }
