@@ -9,7 +9,7 @@ export { dayjs }
 declare var __isAction__: boolean
 
 export async function getAllRepos (options: UserDefinedOptions) {
-  const { token, username, includeFork, includeArchived } = options
+  const { token, username, includeFork, includeArchived, onlyPrivate } = options
   let octokit
   if (__isAction__) {
     const { github } = await import('./action')
@@ -27,12 +27,23 @@ export async function getAllRepos (options: UserDefinedOptions) {
   let allRepos: Repository[] = []
 
   while (l === perPage) {
-    const res = await octokit.rest.repos.listForUser({
-      username,
-      per_page: perPage,
-      page,
-      sort: 'updated'
-    })
+    let res
+    if (!onlyPrivate) {
+      res = await octokit.rest.repos.listForUser({
+        username,
+        per_page: perPage,
+        page,
+        sort: 'updated'
+      })
+    } else {
+      res = await octokit.rest.repos.listForAuthenticatedUser({
+        // username,
+        per_page: perPage,
+        page,
+        sort: 'updated',
+        visibility: 'private'
+      })
+    }
     page++
     l = res.data.length
     allRepos = allRepos.concat(res.data)

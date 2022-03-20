@@ -2,7 +2,8 @@ import type { RestEndpointMethodTypes } from '@octokit/rest'
 export type { Root, Content, Paragraph, ListItem, Link } from 'mdast'
 export type { Dictionary } from 'lodash'
 export type Repository =
-  RestEndpointMethodTypes['repos']['listForUser']['response']['data'][number]
+  | RestEndpointMethodTypes['repos']['listForUser']['response']['data'][number]
+  | RestEndpointMethodTypes['repos']['listForAuthenticatedUser']['response']['data'][number]
 
 export interface RawUserDefinedOptions {
   token: string
