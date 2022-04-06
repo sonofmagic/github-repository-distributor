@@ -5,16 +5,16 @@ export type Repository =
   | RestEndpointMethodTypes['repos']['listForUser']['response']['data'][number]
   | RestEndpointMethodTypes['repos']['listForAuthenticatedUser']['response']['data'][number]
 
-export interface RawUserDefinedOptions {
-  token: string
-  username: string
-  title?: string
-  motto?: string | boolean
-  filepath?: string
-  includeFork?: string | boolean
-  includeArchived?: string | boolean
-  onlyPrivate?: string | boolean
-}
+// export interface RawUserDefinedOptions {
+//   token: string
+//   username: string
+//   title?: string
+//   motto?: string | boolean
+//   filepath?: string
+//   includeFork?: string | boolean
+//   includeArchived?: string | boolean
+//   onlyPrivate?: string | boolean
+// }
 export interface UserDefinedOptions {
   token: string
   username: string

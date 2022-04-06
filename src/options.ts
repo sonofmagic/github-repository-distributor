@@ -1,6 +1,6 @@
-import type { UserDefinedOptions, RawUserDefinedOptions } from './type'
+import type { UserDefinedOptions } from './type'
 import defu from 'defu'
-import { parseBoolean } from './util'
+// import { parseBoolean } from './util'
 // import pkg from '../package.json'
 
 // 'rootDir' is expected to contain all source files.
@@ -21,34 +21,34 @@ export function getDefaults (): UserDefinedOptions {
   }
 }
 
-export function transfer (options?: RawUserDefinedOptions) {
-  let opt: Partial<UserDefinedOptions>
-  if (options) {
-    opt = {
-      ...options,
-      motto: parseBoolean(options.motto),
-      includeFork: parseBoolean(options.includeFork),
-      includeArchived: parseBoolean(options.includeArchived),
-      onlyPrivate: parseBoolean(options.onlyPrivate)
-    }
-  } else {
-    opt = {}
-  }
-  return opt
-}
+//  function transfer (options?: RawUserDefinedOptions) {
+//   let opt: Partial<UserDefinedOptions>
+//   if (options) {
+//     opt = {
+//       ...options,
+//       motto: parseBoolean(options.motto),
+//       includeFork: parseBoolean(options.includeFork),
+//       includeArchived: parseBoolean(options.includeArchived),
+//       onlyPrivate: parseBoolean(options.onlyPrivate)
+//     }
+//   } else {
+//     opt = {}
+//   }
+//   return opt
+// }
 
 export async function getOptions (
-  options?: RawUserDefinedOptions
+  options?: UserDefinedOptions
 ): Promise<UserDefinedOptions> {
-  let opt: Partial<UserDefinedOptions>
+  let opt: UserDefinedOptions
 
   if (__isAction__) {
     const { getActionOptions } = await import('./action')
     opt = getActionOptions()
   } else {
-    opt = transfer(options)
+    opt = options!
   }
-  return defu<Partial<UserDefinedOptions>, UserDefinedOptions>(
+  return defu<UserDefinedOptions, UserDefinedOptions>(
     opt,
     getDefaults()
   ) as UserDefinedOptions

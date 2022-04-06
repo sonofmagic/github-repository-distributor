@@ -1,11 +1,7 @@
 import { getAllRepos, groupByLang, write2Md } from './util'
 import { toMarkdown, makeTree } from './md'
 import { getOptions } from './options'
-import type {
-  UserDefinedOptions,
-  RawUserDefinedOptions,
-  Repository
-} from './type'
+import type { UserDefinedOptions, Repository } from './type'
 
 // import pkg from '../package.json'
 declare var __isAction__: boolean
@@ -23,7 +19,7 @@ export async function getRepos (options: UserDefinedOptions) {
   return repos
 }
 
-export async function main (options?: RawUserDefinedOptions) {
+export async function main (options?: UserDefinedOptions) {
   const opt = await getOptions(options)
   const repos = await getRepos(opt)
   const dic = groupByLang(repos)
